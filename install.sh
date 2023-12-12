@@ -15,14 +15,18 @@ check_cmd()
     fi
 }
 
+skip_msg() {
+    echo -e "$1 : \033[32mSKIPPED\033[0m"
+}
+
 prepare_doom() {
     if [ ! -d ~/.config/emacs ]
     then
         git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs
         check_cmd "INSTALL DOOM"
     else
-	~/.config/emacs/bin/doom upgrade
-	check_cmd "UPDATE DOOM"
+        ~/.config/emacs/bin/doom upgrade
+        check_cmd "UPDATE DOOM"
     fi
 }
 
@@ -33,8 +37,38 @@ prepare_custom_conf() {
         check_cmd "INSTALL CUSTOM CONF"
     else
         git -C ~/.config/doom pull origin main
-	check_cmd "UPDATE CUSTOM CONF"
+        check_cmd "UPDATE CUSTOM CONF"
     fi
+}
+
+install_nerd_font() {
+    if [[ $(fc-list | grep "FiraCode") ]]
+    then
+	skip_msg "INSTALL FONT"
+    else
+        if [ ! -f "$(xdg-user-dir DOWNLOAD)/FiraCode.zip" ]
+        then
+	    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip -O "$(xdg-user-dir DOWNLOAD)/FiraCode.zip"
+	    check_cmd "DOWNLOAD FONTS IN DOWNLOAD FOLDER"
+        else
+            skip_msg "DOWNLOAD FONTS IN DOWNLOAD FOLDER"
+        fi
+        if [ ! -d "$(xdg-user-dir DOWNLOAD)/FiraCode" ]
+        then
+	    unzip "$(xdg-user-dir DOWNLOAD)/FiraCode.zip" -d "$(xdg-user-dir DOWNLOAD)/FiraCode" 
+	    check_cmd "UNZIP FONTS IN DOWNLOAD FOLDER"
+        else
+            skip_msg "UNZIP FONTS IN DOWNLOAD FOLDER"
+        fi
+	mkdir -p ~/.local/share/fonts
+	check_cmd "PREPARE FONTS FOLDER"
+	cp $(xdg-user-dir DOWNLOAD)/FiraCode/* ~/.local/share/fonts/
+	check_cmd "INSTALL FONTS"
+	fc-cache -fv
+	check_cmd "FONT RELOAD CACHE"
+    fi
+
+    # https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip
 }
 
 sync_doom() {
@@ -51,4 +85,5 @@ sync_doom() {
 
 prepare_doom
 prepare_custom_conf
+install_nerd_font
 sync_doom
