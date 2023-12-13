@@ -71,6 +71,10 @@ install_nerd_font() {
     # https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip
 }
 
+install_required_packages() {
+    sudo dnf install ripgrep -y
+}
+
 sync_doom() {
     ~/.config/emacs/bin/doom sync
     check_cmd "FINISH DOOM INSTALL"
@@ -86,4 +90,5 @@ sync_doom() {
 prepare_doom
 prepare_custom_conf
 install_nerd_font
+install_required_packages
 sync_doom
