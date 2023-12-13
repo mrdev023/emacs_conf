@@ -72,7 +72,7 @@ install_nerd_font() {
 }
 
 install_required_packages() {
-    sudo dnf install ripgrep -y
+    sudo dnf install ripgrep fish -y
 }
 
 sync_doom() {
