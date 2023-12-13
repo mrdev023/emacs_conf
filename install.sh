@@ -41,35 +41,6 @@ prepare_custom_conf() {
     fi
 }
 
-install_nerd_font() {
-    if [[ $(fc-list | grep "FiraCode") ]]
-    then
-	skip_msg "INSTALL FONT"
-    else
-        if [ ! -f "$(xdg-user-dir DOWNLOAD)/FiraCode.zip" ]
-        then
-	    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip -O "$(xdg-user-dir DOWNLOAD)/FiraCode.zip"
-	    check_cmd "DOWNLOAD FONTS IN DOWNLOAD FOLDER"
-        else
-            skip_msg "DOWNLOAD FONTS IN DOWNLOAD FOLDER"
-        fi
-        if [ ! -d "$(xdg-user-dir DOWNLOAD)/FiraCode" ]
-        then
-	    unzip "$(xdg-user-dir DOWNLOAD)/FiraCode.zip" -d "$(xdg-user-dir DOWNLOAD)/FiraCode" 
-	    check_cmd "UNZIP FONTS IN DOWNLOAD FOLDER"
-        else
-            skip_msg "UNZIP FONTS IN DOWNLOAD FOLDER"
-        fi
-	mkdir -p ~/.local/share/fonts
-	check_cmd "PREPARE FONTS FOLDER"
-	cp $(xdg-user-dir DOWNLOAD)/FiraCode/* ~/.local/share/fonts/
-	check_cmd "INSTALL FONTS"
-	fc-cache -fv
-	check_cmd "FONT RELOAD CACHE"
-    fi
-
-    # https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip
-}
 
 install_required_packages() {
     sudo dnf install ripgrep fish -y
@@ -89,6 +60,5 @@ sync_doom() {
 
 prepare_doom
 prepare_custom_conf
-install_nerd_font
 install_required_packages
 sync_doom
