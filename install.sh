@@ -65,7 +65,7 @@ prepare_fira_code_nerd_font() {
 }
 
 install_required_packages() {
-    sudo dnf install ripgrep fish fd-find git -y
+    sudo dnf install ripgrep fish fd-find git gdb -y
 }
 
 sync_doom() {
