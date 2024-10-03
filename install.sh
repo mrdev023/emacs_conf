@@ -33,7 +33,7 @@ prepare_doom() {
 prepare_custom_conf() {
     if [ ! -d ~/.config/doom ]
     then
-        git clone https://gitea.mrdev023.fr/florian.richer/emacs_conf ~/.config/doom
+        git clone git@gitea.mrdev023.fr:florian.richer/emacs_conf.git ~/.config/doom
         check_cmd "INSTALL CUSTOM CONF"
     else
         git -C ~/.config/doom pull origin main
@@ -41,9 +41,31 @@ prepare_custom_conf() {
     fi
 }
 
+prepare_fira_code_nerd_font() {
+    if [ -d ~/.local/share/fonts/fira_code ]
+    then
+        rm -rf ~/.local/share/fonts/fira_code
+        check_cmd "REMOVE OLD FIRA CODE INSTALLATION"
+    fi
+
+    curl -L -o ~/fira_code.tar.xz https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.tar.xz
+    check_cmd "DOWNLOAD FIRA CODE NERD FONT"
+
+    mkdir -p ~/.local/share/fonts/fira_code
+    check_cmd "PREPARE FIRA CODE NERD FONT INSTALLATION"
+
+    tar -xvf ~/fira_code.tar.xz -C ~/.local/share/fonts/fira_code
+    check_cmd "INSTALL FIRA CODE NERD FONT"
+
+    fc-cache -f -v
+    check_cmd "UPDATE FONT CACHE"
+
+    rm -rf ~/fira_code.tar.xz
+    check_cmd "REMOVE USELESS FIRA CODE NERD FONT FILES"
+}
 
 install_required_packages() {
-    sudo dnf install ripgrep fish -y
+    sudo dnf install ripgrep fish fd-find git -y
 }
 
 sync_doom() {
@@ -58,7 +80,8 @@ sync_doom() {
 ### PROGRAMME ###
 #################
 
+install_required_packages
+prepare_fira_code_nerd_font
 prepare_doom
 prepare_custom_conf
-install_required_packages
 sync_doom
